@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS grow_users;
