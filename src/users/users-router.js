@@ -2,6 +2,7 @@
 const path = require('path')
 const express = require('express')
 const xss = require('xss')
+const { authUser } = require('../basicAuth')
 const UsersService = require('./users-service')
 
 const usersRouter = express.Router()
@@ -12,6 +13,7 @@ const serializeUser = user => ({
     username: xss(user.username),
     email: xss(user.email),
     password: xss(user.password),
+    role: 'basic',
     date_created: user.date_created
 })
 
@@ -27,7 +29,7 @@ usersRouter
     })
     .post(jsonParser, (req, res, next) => {
         const { username, email, password } = req.body
-        const newUser = { email }
+        const newUser = { username, email, password }
 
         for (const [key, value] of Object.entries(newUser)) {
             if (value == null) {
@@ -36,8 +38,8 @@ usersRouter
                 })
             }
         }
-        newUser.username = username
-        newUser.password = password
+
+        newUser.role = "basic"
 
         UsersService.insertUser(
             req.app.get('db'),
@@ -50,6 +52,26 @@ usersRouter
                     .json(serializeUser(user))
             })
             .catch(next)
+    })
+usersRouter
+    .route('/login')
+    .post(jsonParser, (req, res, next) => {
+        const email = req.body.email;
+        const password = req.body.password;
+        
+        UsersService.getByLogin(
+            req.app.get('db'),
+            email,
+            password
+        )
+        .then(user => {
+            res 
+                .status(201)
+                //.location(path.posix.join(req.originalUrl, `/${user.id}`))
+                .json(serializeUser(user))
+        })
+        .catch(next)
+            
     })
 
 usersRouter 

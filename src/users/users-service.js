@@ -22,6 +22,18 @@ const UsersService = {
             .first()
     },
 
+    getByLogin(knex, email, password) {
+        return knex
+            .from('grow_users')
+            .select('*')
+            .where({
+                'email': email,
+                'password': password
+            })
+            // .andWhere('password', password)
+            .first()
+    },
+
     deleteUser(knex, id) {
         return knex('grow_users')
             .where({ id })
