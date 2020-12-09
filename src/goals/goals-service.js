@@ -1,4 +1,4 @@
-const ArticlesService = {
+const GoalsService = {
     getAllGoals(knex) {
         return knex.select('*').from('goals')
     },
@@ -11,8 +11,19 @@ const ArticlesService = {
                 return rows[0]
             })
     },
-    getById(knex, id) {
-        return knex.from('goals').select('*').where('id', id).first()
+    getById(knex, userId, id) {
+        return knex('goals')
+            .select('*')
+            .where({
+            'user_id': userId,
+            'id': id
+        }).first()
+    },
+    getGoalBasedOnUser(knex, userId) {
+        return knex('goals')
+        .select('*')
+        .where('user_id', userId)
+    
     },
     deleteGoal(knex, id) {
         return knex('goals')
@@ -26,4 +37,4 @@ const ArticlesService = {
     }
 }
 
-module.exports = ArticlesService
+module.exports = GoalsService

@@ -2,7 +2,7 @@ const path = require('path')
 const express = require('express')
 const xss = require('xss')
 const { authUser } = require('../basicAuth')
-const ArticlesService = require('../articles-service')
+const GoalsService = require('./goals-service')
 
 const goalsRouter = express.Router()
 const jsonParser = express.json()
@@ -22,7 +22,7 @@ const serializeGoal = goal => ({
 goalsRouter 
     .route('/')
     .get((req, res, next) => {
-        ArticlesService.getAllGoals(
+        GoalsService.getAllGoals(
             req.app.get('db')
         )
         .then(goals => {
@@ -44,7 +44,7 @@ goalsRouter
         newGoal.date_published = date_published
         newGoal.description = description
 
-        ArticlesService.insertGoal(
+        GoalsService.insertGoal(
             req.app.get('db'),
             newGoal
         )
@@ -59,10 +59,30 @@ goalsRouter
     })
 
 goalsRouter
-    .route('/:goal_id')
-    .all((req, res, next) => {
-        ArticlesService.getById(
+    .route('/:userId')
+    .get((req, res, next) => {
+        GoalsService.getGoalBasedOnUser(
             req.app.get('db'),
+            req.params.userId
+        )
+        .then(goals => {
+            if (goals.length === 0) {
+                return res.status(200).json({
+                    message: `No goals yet.` 
+                })
+            }
+            res.json(goals.map(serializeGoal))
+            next()
+        })
+        .catch(next)
+    })
+
+goalsRouter
+    .route('/:userId/:goal_id')
+    .all((req, res, next) => {
+        GoalsService.getById(
+            req.app.get('db'),
+            req.params.userId,
             req.params.goal_id
         )
             .then(goal => {
@@ -80,7 +100,7 @@ goalsRouter
         res.json(serializeGoal(res.goal))
     })
     .delete((req, res, next) => {
-        ArticlesService.deleteGoal(
+        GoalsService.deleteGoal(
             req.app.get('db'),
             req.params.goal_id
         )
@@ -101,7 +121,7 @@ goalsRouter
                 }
             })
 
-        ArticlesService.updateGoal(
+        GoalsService.updateGoal(
             req.app.get('db'),
             req.params.goal_id,
             goalToUpdate
