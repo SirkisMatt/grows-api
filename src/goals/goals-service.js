@@ -34,6 +34,10 @@ const GoalsService = {
         return knex('goals')
             .where({ id })
             .update(newGoalFields)
+            .returning('*')
+            .then(rows => {
+                return rows[0]
+            })
     }
 }
 

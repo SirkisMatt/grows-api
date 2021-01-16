@@ -126,8 +126,11 @@ goalsRouter
             req.params.goal_id,
             goalToUpdate
         )
-            .then(numberOfRowsAffected => {
-                res.status(204).end()
+            .then(goal => {
+                res 
+                    .status(201)
+                    .location(path.posix.join(req.originalUrl, `/${goal.id}`))
+                    .json(serializeGoal(goal))
             })
             .catch(next)
     })
