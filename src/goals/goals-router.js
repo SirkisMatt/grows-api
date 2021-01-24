@@ -110,14 +110,14 @@ goalsRouter
             .catch(next)
     })
     .patch(jsonParser, (req, res, next) => {
-        const { title, description, tree_bet, complete_by, completed, date_published } = req.body
-        const goalToUpdate = { title, description, tree_bet, complete_by, completed, date_published }
+        const { title, description, tree_bet, complete_by, completed, date_published, goal_type_id } = req.body
+        const goalToUpdate = { title, description, tree_bet, complete_by, completed, date_published, goal_type_id }
 
         const numberOfValues = Object.values(goalToUpdate).filter(Boolean).length
         if(numberOfValues === 0)
             return res.status(400).json({
                 error: {
-                    message: `Request body must contain title, description, tree_bet, complete_by or date_published`
+                    message: `Request body must contain title, description, tree_bet, complete_by, goal_type_id or date_published`
                 }
             })
 
