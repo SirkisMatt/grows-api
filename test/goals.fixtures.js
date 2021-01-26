@@ -6,7 +6,7 @@ function makeGoalsArray() {
             description: 'do your best to run a little everyday',
             date_published: '2020-11-07T00:00:00.000Z',
             tree_bet: 2,
-            complete_by: '2020-12-10',
+            complete_by: 'Wed Dec 09 2020',
             completed: false,
             user_id: 1,
             goal_type_id: 3
@@ -17,7 +17,7 @@ function makeGoalsArray() {
             description: 'do your best to work on it 3 hours everyday',
             date_published: '2020-11-07T00:00:00.000Z',
             tree_bet: 10,
-            complete_by: '2020-12-29',
+            complete_by: 'Mon Dec 28 2020',
             completed: false,
             user_id: 1,
             goal_type_id: 2
@@ -28,7 +28,7 @@ function makeGoalsArray() {
             description: 'go to bed earlier so you can wake up earlier',
             date_published: '2020-11-07T00:00:00.000Z',
             tree_bet: 5,
-            complete_by: '2020-12-12',
+            complete_by: 'Fri Dec 11 2020',
             completed: false,
             user_id: 1,
             goal_type_id: 4
