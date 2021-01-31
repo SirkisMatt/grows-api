@@ -35,7 +35,7 @@ goalsRouter
         const newGoal = { title, tree_bet, complete_by, completed, user_id, goal_type_id }
 
         for (const [key, value] of Object.entries(newGoal))
-        if (value == null) {
+        if (!value) {
             return res.status(400).json({
                 error: { message: `Missing '${key}' in request body` }
             })
