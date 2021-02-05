@@ -32,7 +32,7 @@ goalsRouter
     })
     .post(jsonParser, (req, res, next) => {
         const { title, description, tree_bet, complete_by, completed, user_id, goal_type_id, date_published } = req.body
-        const newGoal = { title, tree_bet, complete_by, user_id, goal_type_id }
+        const newGoal = { title, tree_bet, complete_by, completed, user_id, goal_type_id }
 
         for (const [key, value] of Object.entries(newGoal))
         if (!value) {
@@ -43,7 +43,7 @@ goalsRouter
 
         newGoal.date_published = date_published
         newGoal.description = description
-        newGoal.completed = completed
+        //newGoal.completed = completed
 
         GoalsService.insertGoal(
             req.app.get('db'),
@@ -113,6 +113,7 @@ goalsRouter
     .patch(jsonParser, (req, res, next) => {
         const { title, description, tree_bet, complete_by, completed, date_published, goal_type_id } = req.body
         const goalToUpdate = { title, description, tree_bet, complete_by, completed, date_published, goal_type_id }
+
 
         const numberOfValues = Object.values(goalToUpdate).filter(Boolean).length
         if(numberOfValues === 0)
