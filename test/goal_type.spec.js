@@ -70,7 +70,7 @@ describe('goal_types Endpoints', function() {
         
         beforeEach('insert goalTypes', () => {
             return db
-            .into('grow_types')
+            .into('goal_types')
             .insert(goalTypes)
         })
 
@@ -88,7 +88,7 @@ describe('goal_types Endpoints', function() {
   describe(`POST /api/goal-types`, () => {
     context(`Given there are goalTypes in the database`, () => {
         //const testUsers = makeUsersArray()
-        //const goalTypes = makeGoalTypeArray()       
+        const goalTypes = makeGoalTypeArray()       
 
         beforeEach('insert goalTypes', () => {
             return db
@@ -96,62 +96,56 @@ describe('goal_types Endpoints', function() {
             .insert(goalTypes)
         })
 
-        it(`creates a goalType, responds with 201 and the new goalType`, () => {
-            this.retries(3)
-            const newGoalType = {
-                title: 'New Type of Goal',
+        it(`creates a goalType, responds with 201 and the new goalType`, async function () {
+            const updateGoalTypes = {
+                title: "New"
             }
-            return supertest(app)
+            await supertest(app)
                 .post(`/api/goal-types`)
                 //.set('Authorization', `Bearer ${process.env.API_TOKEN}`)
-                .send(newGoalType)
-                .expect(201)
-                .expect(res => {
+                .send(updateGoalTypes)
+                expect(201)
+                expect(res => {
                     expect(res.body.title).to.eql(newGoalType.title)
                     expect(res.body).to.have.property('id')
                     expect(res.headers.location).to.eql(`/api/goal-types/${res.body.id}`)
                     expect(actual).to.eql(expected)
                 })
-                .then(res =>
-                    supertest(app)
-                    .get(`/api/goal-types/${res.body.id}`)
-                    //.set('Authorization', `Bearer ${process.env.API_TOKEN}`)
-                    .expect(res.body)
-                )
         })
-    })
+    
 
-    const requiredFields = ['title']
+    //const requiredFields = ['title']
 
-    requiredFields.forEach(field => {
-        const newGoalType = {
-            title: 'New Type of Goal',
-        }
+    //requiredFields.forEach(field => {
+       
 
-        it(`responds with 400 and an error message when the '${field}' in missing`, () => {
-            delete newGoalType[field]
+        it(`responds with 400 and an error message when the title is missing`, () => {
+            //delete newGoalType[field]
+            const newGoalType = {
+                //title: 'New Type of Goal',
+            }
 
             return supertest(app)
                 .post('/api/goal-types')
                 //.set('Authorization', `Bearer ${process.env.API_TOKEN}`)
                 .send(newGoalType)
                 .expect(400, {
-                    error: { message: `Missing '${field}' in request body` }
+                    error: { message: `Missing 'title' in request body` }
                 })
         })
     })
   })
 
     describe(`DELETE /api/goal-types/:goal_type_id`, () => {
-        // context(`Given no goalTypes`, () => {
-        //     it(`responds with 404`, () => {
-        //         const goalTypeId = 123456
-        //         return supertest(app)
-        //             .delete(`/api/goal-types/${goalTypeId}`)
-        //             //.set('Authorization', `Bearer ${process.env.API_TOKEN}`)
-        //             .expect(404, { error: { message: `Goal Type doesn't exist` } })
-        //     })
-        // })
+        context(`Given no goalTypes`, () => {
+            it(`responds with 404`, () => {
+                const goalTypeId = 123456
+                return supertest(app)
+                    .delete(`/api/goal-types/${goalTypeId}`)
+                    //.set('Authorization', `Bearer ${process.env.API_TOKEN}`)
+                    .expect(404, { error: { message: `Goal Type doesn't exist` } })
+            })
+        })
 
         context(`Given there are goalTypes in the database`, () => {
             // const testUsers = makeUsersArray()
@@ -181,16 +175,16 @@ describe('goal_types Endpoints', function() {
       })
     })
 
-    describe.only(`PATCH /api/goal-types/:goal_type_id`, () => {
-        // context(`Given no goalTypes`, () => {
-        //     it('responds with 404', () => {
-        //         const goalTypeId = 123456
-        //         return supertest(app)
-        //             .patch(`/api/goal-types/${goalTypeId}`)
-        //             //.set('Authorization', `Bearer ${process.env.API_TOKEN}`)
-        //             .expect(404, { error: { message: `Goal doesn't exist` } })
-        //     })
-        // })
+    describe(`PATCH /api/goal-types/:goal_type_id`, () => {
+        context(`Given no goalTypes`, () => {
+            it('responds with 404', () => {
+                const goalTypeId = 123456
+                return supertest(app)
+                    .patch(`/api/goal-types/${goalTypeId}`)
+                    //.set('Authorization', `Bearer ${process.env.API_TOKEN}`)
+                    .expect(404, { error: { message: `Goal Type doesn't exist` } })
+            })
+        })
 
         context(`Given there are goal-types in the database`, () => {
             // const testUsers = makeUsersArray()
@@ -210,12 +204,12 @@ describe('goal_types Endpoints', function() {
             }
             const expectedGoalTypes = {
                 ...goalTypes[idToUpdate - 1],
-                ...updateGoalTypes
+                ...updateGoalType
             }
             return supertest(app)
                 .patch(`/api/goal-types/${idToUpdate}`)
                 //.set('Authorization', `Bearer ${process.env.API_TOKEN}`)
-                .send(updateGoalTypes)
+                .send(updateGoalType)
                 .expect(204)
                 .then(res => 
                     supertest(app)
@@ -228,7 +222,7 @@ describe('goal_types Endpoints', function() {
         it(`responds with 400 when no required fields supplied`, () => {
             const idToUpdate = 2
             return supertest(app)
-                .patch(`/api/goalitypes/${idToUpdate}`)
+                .patch(`/api/goal-types/${idToUpdate}`)
                 //.set('Authorization', `Bearer ${process.env.API_TOKEN}`)
                 .send({ irreverantField: 'foo' })
                 .expect(400, {
@@ -252,7 +246,7 @@ describe('goal_types Endpoints', function() {
                 .patch(`/api/goal-types/${idToUpdate}`)
                 //.set('Authorization', `Bearer ${process.env.API_TOKEN}`)
                 .send({
-                    ...updateGoalTypes,
+                    ...updateGoalType,
                     fieldToIgnore: 'should not be in GET response'
                 })
                 .expect(204)
