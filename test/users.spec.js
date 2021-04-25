@@ -87,16 +87,16 @@ describe('grow_users Endpoints', function() {
 
   describe(`POST /api/users`, () => {
     context(`Given there are testUsers in the database`, () => {
-        const testUsers = makeUsersArray()
-        //const goalTypes = makeGoalTypeArray()       
+        // const testUsers = makeUsersArray()
+        // //const goalTypes = makeGoalTypeArray()       
 
-        beforeEach('insert testUsers', () => {
-            return db
-            .into('grow_users')
-            .insert(testUsers)
-        })
+        // beforeEach('insert testUsers', () => {
+        //     return db
+        //     .into('grow_users')
+        //     .insert(testUsers)
+        // })
 
-        it(`creates a User, responds with 201 and the new user`, async function () {
+        it.only(`creates a User, responds with 201 and the new user`, async () => {
             const newUser = {
                 username: 'Test',
                 email: 'test@fakeemail.com',
@@ -107,15 +107,14 @@ describe('grow_users Endpoints', function() {
                 .post(`/api/users`)
                 //.set('Authorization', `Bearer ${process.env.API_TOKEN}`)
                 .send(newUser)
-                expect(201)
-                expect(res => {
+                .expect(201)
+                .expect(res => {
                     expect(res.body.title).to.eql(newUser.title)
                     expect(res.body.email).to.eql(newUser.email)
                     expect(res.body.password).to.eql(newUser.password)
                     expect(res.body.role).to.eql(newUser.role)
                     expect(res.body).to.have.property('id')
                     expect(res.headers.location).to.eql(`/api/users/${res.body.id}`)
-                    expect(actual).to.eql(expected)
                 })
         })
     
